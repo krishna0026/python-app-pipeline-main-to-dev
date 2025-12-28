@@ -1,0 +1,29 @@
+name: Deploy Local Apache
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    environment:
+      name: local-deploy
+      url: http://localhost
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy Flask App to Apache
+        run: |
+          sudo apt-get install -y libapache2-mod-wsgi-py3
+          sudo rm -rf /var/www/html/*
+          sudo cp -r myapp/* /var/www/html/
+
+          sudo systemctl restart apache2
+
+      - name: Deployment Done
+        run: echo "Python app deployed successfully 🎯"
